@@ -39,17 +39,6 @@ public class XmlImporterRepositoryImpl implements XmlImporterRepository {
         }
     }
 
-
-    @Override
-    public List<String> getAllTableNames() {
-        return List.of();
-    }
-
-    @Override
-    public String getTableDDL(String tableName) {
-        return "";
-    }
-
     @Override
     public void updateAllTables() {
 

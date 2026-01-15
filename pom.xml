@@ -59,6 +59,13 @@
             <artifactId>lombok</artifactId>
             <version>1.18.38</version>
         </dependency>
+        <!-- Source: https://mvnrepository.com/artifact/org.codehaus.groovy/groovy-xml -->
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-xml</artifactId>
+            <version>3.0.25</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <build>
