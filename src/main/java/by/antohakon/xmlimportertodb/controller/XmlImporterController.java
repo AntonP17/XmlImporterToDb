@@ -32,4 +32,13 @@ public class XmlImporterController {
         return xmlImporterService.getTableDDL(xmlUrl, tableName);
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/updateTable")
+    public String updateTable(@RequestParam(required = false) String tableName,
+                              @RequestParam String xmlUrl) {
+
+        return xmlImporterService.updateTablesFromParam(tableName, xmlUrl);
+    }
+
+
 }
