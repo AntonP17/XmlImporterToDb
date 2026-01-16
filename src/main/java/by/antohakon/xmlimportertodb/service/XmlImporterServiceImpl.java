@@ -118,12 +118,26 @@ public class XmlImporterServiceImpl implements XmlImporterService {
                             ddl.append(columnName).append(" ").append(columnType).append(", ");
                         }
                     }
+                    // Получаем вложенные элементы
+                    NodeList childNodes = rowElement.getChildNodes();
+                    for (int k = 0; k < childNodes.getLength(); k++) {
+                        Node childNode = childNodes.item(k);
+                        if (childNode.getNodeType() == Node.ELEMENT_NODE) {
+                            String childName = childNode.getNodeName();
+                            String childValue = childNode.getTextContent();
+                            if (!columns.contains(childName)) {
+                                columns.add(childName);
+                                String columnType = getColumnType(childValue); // Определяем тип данных
+                                ddl.append(childName).append(" ").append(columnType).append(", ");
+                            }
+                        }
+                    }
                 }
             }
             ddl.setLength(ddl.length() - 2); // Удаляем последнюю запятую
             ddl.append(");");
 
-            log.info("DDL={}", ddl.toString());
+            log.info("DDL={}",ddl.toString());
             return ddl.toString();
 
         } catch (Exception e) {
