@@ -30,6 +30,7 @@ public class XmlImporterServiceImpl implements XmlImporterService {
 
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document document = builder.parse(new URL(xmlUrl).openStream());
+            document.getDocumentElement().normalize();
 
             // Получаем корневой элемент <yml_catalog>
             Element root = document.getDocumentElement();
@@ -49,7 +50,9 @@ public class XmlImporterServiceImpl implements XmlImporterService {
                 Node child = children.item(i);
                 if (child.getNodeType() == Node.ELEMENT_NODE) {
                     String childName = child.getNodeName();
-                    result.add(childName);
+                    if ("currencies".equals(childName) || "categories".equals(childName) || "offers".equals(childName)) {
+                        result.add(childName);
+                    }
                 }
             }
             return result;

@@ -20,9 +20,9 @@ public class XmlImporterController {
     @GetMapping("/xmlUrl")
     public List<String> getAllTableNames(@RequestParam String xmlUrl){
 
-     //   return xmlImporterService.getAllTableNames(xmlUrl);
-        XmlImporterGroovy xmlImporterGroovy = new XmlImporterGroovy();
-       return xmlImporterGroovy.getTableNames(xmlUrl);
+     return xmlImporterService.getAllTableNames(xmlUrl);
+        //  XmlImporterGroovy xmlImporterGroovy = new XmlImporterGroovy();
+      // return xmlImporterGroovy.getTableNames(xmlUrl);
 
     }
 
