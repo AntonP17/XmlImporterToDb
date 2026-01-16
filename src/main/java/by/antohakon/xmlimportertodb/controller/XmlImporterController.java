@@ -10,20 +10,26 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/xmlParser")
+@RequestMapping("api/xmlParser/xmlUrl")
 public class XmlImporterController {
 
     private final XmlImporterServiceImpl xmlImporterService;
 
-
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/xmlUrl")
+    @GetMapping()
     public List<String> getAllTableNames(@RequestParam String xmlUrl){
 
      return xmlImporterService.getAllTableNames(xmlUrl);
         //  XmlImporterGroovy xmlImporterGroovy = new XmlImporterGroovy();
       // return xmlImporterGroovy.getTableNames(xmlUrl);
 
+    }
+
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    @GetMapping("/getDdl")
+    public String getDdl(@RequestParam String xmlUrl,
+                         @RequestParam String tableName){
+        return xmlImporterService.getTableDDL(xmlUrl, tableName);
     }
 
 }

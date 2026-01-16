@@ -8,6 +8,6 @@ public interface XmlImporterService {
     List<String> getAllTableNames(String xmlUrl);
 
     // возврат конкретно SQL текстом дял создания конкретной таблициы
-    String getTableDDL(String tableName);
+    String getTableDDL(String tableName, String xmlUrl);
 
 }
