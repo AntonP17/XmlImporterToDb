@@ -42,14 +42,7 @@ public class XmlImporterRepositoryImpl implements XmlImporterRepository {
 
     public void updateCurrenciesDb(String id, String rate) throws SQLException {
 
-
-//        String sql = "INSERT INTO currencies (id, rate) " +
-//                "VALUES (?, ?) " +
-//                "ON CONFLICT (id) DO UPDATE SET " +
-//                "rate = EXCLUDED.rate";
-
         String sql = "INSERT INTO currencies (id, rate) VALUES (?, ?)";
-
         PreparedStatement pstmt = connection.prepareStatement(sql);
         pstmt.setString(1, id);
         pstmt.setDouble(2, Double.parseDouble(rate));
@@ -57,48 +50,23 @@ public class XmlImporterRepositoryImpl implements XmlImporterRepository {
         pstmt.executeUpdate();
 
         pstmt.close();
-       // connection.close();
+
     }
 
-    public void updateCategoriesDb(String id, String parentId, String name) throws SQLException {
+    public void updateCategoriesDb(String id, String parentId) throws SQLException {
 
-//        String sql = "INSERT INTO categories (id, parentId, name) " +
-//                "VALUES (?, ?, ?) " +
-//                "ON CONFLICT (id) DO UPDATE SET " +
-//                "parentId = EXCLUDED.parentId, " +
-//                "name = EXCLUDED.name";
-
-        String sql = "INSERT INTO categories (id, parentId, name) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO categories (id, parentId) VALUES (?, ?)";
 
         PreparedStatement pstmt = connection.prepareStatement(sql);
         pstmt.setInt(1, Integer.parseInt(id));
         pstmt.setInt(2, Integer.parseInt(parentId));
-        pstmt.setString(3, name);
 
         pstmt.executeUpdate();
 
         pstmt.close();
-       // connection.close();
     }
 
     public void updateOffersDb(OfferDto offerDto) throws SQLException {
-
-//        StringBuilder sqlBuilder = new StringBuilder();
-//        sqlBuilder.append("INSERT INTO offers (id, available, url, price, currencyId, categoryId, picture, name, vendor, vendorCode, description, param, count) ");
-//        sqlBuilder.append("VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ");
-//        sqlBuilder.append("ON CONFLICT (id) DO UPDATE SET ");
-//        sqlBuilder.append("available = EXCLUDED.available, ");
-//        sqlBuilder.append("url = EXCLUDED.url, ");
-//        sqlBuilder.append("price = EXCLUDED.price, ");
-//        sqlBuilder.append("currencyId = EXCLUDED.currencyId, ");
-//        sqlBuilder.append("categoryId = EXCLUDED.categoryId, ");
-//        sqlBuilder.append("picture = EXCLUDED.picture, ");
-//        sqlBuilder.append("name = EXCLUDED.name, ");
-//        sqlBuilder.append("vendor = EXCLUDED.vendor, ");
-//        sqlBuilder.append("vendorCode = EXCLUDED.vendorCode, ");
-//        sqlBuilder.append("description = EXCLUDED.description, ");
-//        sqlBuilder.append("param = EXCLUDED.param, ");
-//        sqlBuilder.append("count = EXCLUDED.count");
 
         StringBuilder sqlBuilder = new StringBuilder();
         sqlBuilder.append("INSERT INTO offers (id, available, url, price, currencyId, categoryId, picture, name, vendor, vendorCode, description, param, count) ");
@@ -124,7 +92,6 @@ public class XmlImporterRepositoryImpl implements XmlImporterRepository {
         pstmt.executeUpdate();
 
         pstmt.close();
-      //  connection.close();
     }
     @Override
     public void updateAllTables() {

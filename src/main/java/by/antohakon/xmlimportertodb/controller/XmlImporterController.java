@@ -1,6 +1,5 @@
 package by.antohakon.xmlimportertodb.controller;
 
-import by.antohakon.xmlimportertodb.service.XmlImporterGroovy;
 import by.antohakon.xmlimportertodb.service.XmlImporterServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,8 +19,6 @@ public class XmlImporterController {
     public List<String> getAllTableNames(@RequestParam String xmlUrl){
 
      return xmlImporterService.getAllTableNames(xmlUrl);
-        //  XmlImporterGroovy xmlImporterGroovy = new XmlImporterGroovy();
-      // return xmlImporterGroovy.getTableNames(xmlUrl);
 
     }
 

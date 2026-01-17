@@ -25,6 +25,7 @@ public class XmlImporterServiceImpl implements XmlImporterService {
     @Override
     public List<String> getAllTableNames(String xmlUrl) {
 
+        log.info(" method getAllTableNames");
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
@@ -35,6 +36,7 @@ public class XmlImporterServiceImpl implements XmlImporterService {
             Document document = builder.parse(new URL(xmlUrl).openStream());
             document.getDocumentElement().normalize();
 
+            log.info("parsing XML");
             // Получаем корневой элемент <yml_catalog>
             Element root = document.getDocumentElement();
 
@@ -70,6 +72,8 @@ public class XmlImporterServiceImpl implements XmlImporterService {
 
     @Override
     public String getTableDDL(String xmlUrl, String tableName) {
+
+        log.info(" method getTableDDL");
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
@@ -80,6 +84,7 @@ public class XmlImporterServiceImpl implements XmlImporterService {
             Document document = builder.parse(new URL(xmlUrl).openStream());
             document.getDocumentElement().normalize();
 
+            log.info("parsing XML");
             // Получаем корневой элемент <yml_catalog>
             Element root = document.getDocumentElement();
 
@@ -100,6 +105,7 @@ public class XmlImporterServiceImpl implements XmlImporterService {
             }
             Element table = (Element) tableNodes.item(0);
 
+            log.info("таблицы найдены={}", table.toString());
             // Создаем SQL для создания таблицы
             StringBuilder ddl = new StringBuilder();
             ddl.append("CREATE TABLE IF NOT EXISTS ").append(tableName).append(" (");
@@ -119,7 +125,7 @@ public class XmlImporterServiceImpl implements XmlImporterService {
                         String columnValue = attribute.getNodeValue();
                         if (!columns.contains(columnName)) {
                             columns.add(columnName);
-                            String columnType = getColumnType(columnValue); // Определяем тип данных
+                            String columnType = getColumnType(columnName, columnValue); // Определяем тип данных
                             ddl.append(columnName).append(" ").append(columnType).append(", ");
                         }
                     }
@@ -132,7 +138,7 @@ public class XmlImporterServiceImpl implements XmlImporterService {
                             String childValue = childNode.getTextContent();
                             if (!columns.contains(childName)) {
                                 columns.add(childName);
-                                String columnType = getColumnType(childValue); // Определяем тип данных
+                                String columnType = getColumnType(childName, childValue); // Определяем тип данных
                                 ddl.append(childName).append(" ").append(columnType).append(", ");
                             }
                         }
@@ -152,31 +158,48 @@ public class XmlImporterServiceImpl implements XmlImporterService {
     }
 
 
-    private String getColumnType(String value) {
-        try {
-            // Попытка преобразовать значение в число
-            Integer.parseInt(value);
-            return "INT";
-        } catch (NumberFormatException e) {
-            // Попытка преобразовать значение в логическое значение
-            if ("true".equals(value) || "false".equals(value)) {
-                return "BOOLEAN";
-            }
-            // Если значение не является числом или логическим значением, то оно текстовое
-            return "VARCHAR(255)";
+    private String getColumnType(String columnName, String value) {
+        log.info("получаем тип атрибута ");
+        switch (columnName) {
+            case "vendorCode":
+            case "param":
+                return "VARCHAR(255)";
+            case "description":
+                return "TEXT";
+            default:
+                try {
+                    // Попытка преобразовать значение в число
+                    Integer.parseInt(value);
+                    return "INT";
+                } catch (NumberFormatException e) {
+                    // Попытка преобразовать значение в логическое значение
+                    if ("true".equals(value) || "false".equals(value)) {
+                        return "BOOLEAN";
+                    }
+                    // Если значение не является числом или логическим значением, то оно текстовое
+                    if (value.length() > 255) {
+                        return "TEXT";
+                    } else {
+                        return "VARCHAR(255)";
+                    }
+                }
         }
     }
 
     public String updateTablesFromParam(String tableName, String xmlUrl) {
+        log.info("method updateTablesFromParam");
         if (tableName != null && !tableName.isEmpty()) {
             switch (tableName) {
                 case "offers":
+                    log.info("update table offers");
                     updateOffers(tableName, xmlUrl);
                     break;
                 case "currencies":
+                    log.info("update table currencies");
                     updateCurrencies(tableName, xmlUrl);
                     break;
                 case "categories":
+                    log.info("update table categories");
                     updateCategories(tableName, xmlUrl);
                     break;
                 default:
@@ -185,6 +208,7 @@ public class XmlImporterServiceImpl implements XmlImporterService {
             return "Данные в таблице " + tableName + " обновлены";
         } else {
             // Запускаем общий метод
+            log.info("method update all tables");
             update(xmlUrl);
             return "Данные во всех таблицах обновлены";
         }
@@ -201,6 +225,7 @@ public class XmlImporterServiceImpl implements XmlImporterService {
             Document document = builder.parse(new URL(xmlUrl).openStream());
             document.getDocumentElement().normalize();
 
+            log.info("parsing XML");
             // Получаем корневой элемент <yml_catalog>
             Element root = document.getDocumentElement();
 
@@ -220,6 +245,7 @@ public class XmlImporterServiceImpl implements XmlImporterService {
                 return;
             }
             Element table = (Element) tableNodes.item(0);
+            log.info("table element={}", table);
 
             // Получаем все предложения
             NodeList offerNodes = table.getChildNodes();
@@ -312,7 +338,6 @@ public class XmlImporterServiceImpl implements XmlImporterService {
     }
 
 
-
     public void updateCurrencies(String tableName, String xmlUrl) {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -324,6 +349,7 @@ public class XmlImporterServiceImpl implements XmlImporterService {
             Document document = builder.parse(new URL(xmlUrl).openStream());
             document.getDocumentElement().normalize();
 
+            log.info("parsing XML");
             // Получаем корневой элемент <yml_catalog>
             Element root = document.getDocumentElement();
 
@@ -343,6 +369,7 @@ public class XmlImporterServiceImpl implements XmlImporterService {
                 return;
             }
             Element table = (Element) tableNodes.item(0);
+            log.info("table element={}", table);
 
             // Получаем все валюты
             NodeList currencyNodes = table.getChildNodes();
@@ -364,8 +391,6 @@ public class XmlImporterServiceImpl implements XmlImporterService {
     }
 
 
-
-
     public void updateCategories(String tableName, String xmlUrl) {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -377,6 +402,7 @@ public class XmlImporterServiceImpl implements XmlImporterService {
             Document document = builder.parse(new URL(xmlUrl).openStream());
             document.getDocumentElement().normalize();
 
+            log.info("parsing XML");
             // Получаем корневой элемент <yml_catalog>
             Element root = document.getDocumentElement();
 
@@ -396,6 +422,7 @@ public class XmlImporterServiceImpl implements XmlImporterService {
                 return;
             }
             Element table = (Element) tableNodes.item(0);
+            log.info("table element={}", table);
 
             // Получаем все категории
             NodeList categoryNodes = table.getChildNodes();
@@ -408,7 +435,12 @@ public class XmlImporterServiceImpl implements XmlImporterService {
                     String parentId = category.getAttribute("parentId");
                     String name = category.getTextContent();
 
-                    repository.updateCategoriesDb(id, parentId, name);
+                    // Проверка на пустую строку
+                    if (parentId.isEmpty()) {
+                        parentId = "0"; // Используем значение по умолчанию
+                    }
+
+                    repository.updateCategoriesDb(id, parentId);
                 }
             }
 
@@ -429,6 +461,7 @@ public class XmlImporterServiceImpl implements XmlImporterService {
             Document document = builder.parse(new URL(xmlUrl).openStream());
             document.getDocumentElement().normalize();
 
+            log.info("parsing XML");
             // Получаем корневой элемент <yml_catalog>
             Element root = document.getDocumentElement();
 
@@ -442,6 +475,7 @@ public class XmlImporterServiceImpl implements XmlImporterService {
             log.info("Элемент найден");
 
             // Обновляем данные во всех таблицах
+            log.info("update all tables");
             NodeList children = shop.getChildNodes();
             for (int i = 0; i < children.getLength(); i++) {
                 Node child = children.item(i);

@@ -4,12 +4,6 @@ import java.util.List;
 
 public interface XmlImporterRepository {
 
-//    // все имена таблиц какие есть в XML
-//    List<String> getAllTableNames();
-//
-//    // возврат конкретно SQL текстом дял создания конкретной таблициы
-//    String getTableDDL(String tableName);
-
     // обновляет все таблицы в бд на основе изменений в XML
     void updateAllTables();
 
